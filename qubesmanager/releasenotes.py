@@ -34,5 +34,5 @@ class ReleaseNotesDialog(Ui_ReleaseNotesDialog, QDialog):
         self.setupUi(self)
 
         with open('/usr/share/doc/qubes-release-notes/README.Qubes-Release'
-                  '-Notes', 'r') as release_notes:
-            self.releaseNotes.setText(release_notes.read())
+                  '-Notes.html', 'r') as release_notes:
+            self.releaseNotes.setHtml(release_notes.read())
