@@ -1662,7 +1662,7 @@ class VmManagerWindow(Ui_VmManagerWindow, QMainWindow):
                 action.setData(QVariant(text))
                 menu_empty = False
 
-            text = "/var/log/xen/console/guest-" + vm.name + "-dm.log"
+            text = "/var/log/xen/console/guest-" + vm.name + "_dm.log"
             if os.path.exists(text):
                 action = self.logs_menu.addAction(QIcon(":/log.png"), text)
                 action.setData(QVariant(text))
