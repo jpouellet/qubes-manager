@@ -91,7 +91,7 @@ def select_path_button_clicked(dialog, select_file = False):
                     else "qubes.SelectDirectory")
     else:
         new_path = file_dialog_function(dialog,
-            dialog.tr("Select backup location."),
+            app.tr("Select backup location."),
             backup_location if backup_location else '/')
 
     if new_path != None:
