@@ -605,17 +605,17 @@ class VmUpdateInfoWidget(QWidget):
         if state == "update":
             label_text = "<font color=\"#CCCC00\">Check updates</font>"
             icon_path = ":/update-recommended.png"
-            tooltip_text = self.tr("Updates pending!")
+            tooltip_text = app.tr("Updates pending!")
         elif state == "outdated":
             label_text = "<font color=\"red\">VM outdated</font>"
             icon_path = ":/outdated.png"
-            tooltip_text = self.tr(
+            tooltip_text = app.tr(
                 "The VM must be restarted for its filesystem to reflect the "
                 "template's recent committed changes.")
         elif state == "to-be-outdated":
             label_text = "<font color=\"#800000\">TemplateVM running</font>"
             icon_path = ":/to-be-outdated.png"
-            tooltip_text = self.tr(
+            tooltip_text = app.tr(
                 "The TemplateVM must be stopped before changes from its "
                 "current session can be picked up by this VM.")
         elif state is None:

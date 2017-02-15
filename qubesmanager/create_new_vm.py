@@ -99,7 +99,7 @@ class NewVmDlg (QDialog, Ui_NewVMDlg):
         for (i, vm) in enumerate(self.template_vm_list):
             if vm is self.qvm_collection.get_default_template():
                 default_index = i
-                self.template_name.insertItem(i, vm.name + self.tr(" (default)"))
+                self.template_name.insertItem(i, vm.name + app.tr(" (default)"))
             else:
                 self.template_name.insertItem(i, vm.name)
         self.template_name.setCurrentIndex(default_index)
@@ -123,7 +123,7 @@ class NewVmDlg (QDialog, Ui_NewVMDlg):
         for (i, vm) in enumerate(self.netvm_list):
             if vm is self.qvm_collection.get_default_netvm():
                 default_index = i
-                self.netvm_name.insertItem(i, vm.name + self.tr(" (default)"))
+                self.netvm_name.insertItem(i, vm.name + app.tr(" (default)"))
             else:
                 self.netvm_name.insertItem(i, vm.name)
         self.netvm_name.setCurrentIndex(default_index)
@@ -188,8 +188,8 @@ class NewVmDlg (QDialog, Ui_NewVMDlg):
         vmname = str(self.vmname.text())
         if self.qvm_collection.get_vm_by_name(vmname) is not None:
             QMessageBox.warning(None,
-                self.tr("Incorrect AppVM Name!"),
-                unicode(self.tr("A VM with the name <b>{0}</b> already exists in the "
+                app.tr("Incorrect AppVM Name!"),
+                unicode(app.tr("A VM with the name <b>{0}</b> already exists in the "
                         "system!")).format(vmname))
             return
 
@@ -199,8 +199,8 @@ class NewVmDlg (QDialog, Ui_NewVMDlg):
         if self.template_name.isEnabled():
             if len(self.template_vm_list) == 0:
                 QMessageBox.warning(None,
-                    self.tr("No template available!"),
-                    self.tr("Cannot create non-standalone VM when no "
+                    app.tr("No template available!"),
+                    app.tr("Cannot create non-standalone VM when no "
                             "compatible template exists. Create template VM "
                             "first or choose to create standalone VM."))
                 return
@@ -228,8 +228,8 @@ class NewVmDlg (QDialog, Ui_NewVMDlg):
             vmtype = "TemplateHVM"
         else:
             QErrorMessage.showMessage(None,
-                self.tr("Error creating AppVM!"),
-                self.tr("Unknown VM type, this is error in Qubes Manager"))
+                app.tr("Error creating AppVM!"),
+                app.tr("Unknown VM type, this is error in Qubes Manager"))
             self.done(0)
 
 
@@ -240,7 +240,7 @@ class NewVmDlg (QDialog, Ui_NewVMDlg):
         thread.start()
 
         progress = QProgressDialog(
-            unicode(self.tr("Creating new {0} <b>{1}</b>...")).format(vmtype, vmname), "", 0, 0)
+            unicode(app.tr("Creating new {0} <b>{1}</b>...")).format(vmtype, vmname), "", 0, 0)
         progress.setCancelButton(None)
         progress.setModal(True)
         progress.show()
@@ -253,11 +253,11 @@ class NewVmDlg (QDialog, Ui_NewVMDlg):
 
         if thread_monitor.success:
             self.trayIcon.showMessage(
-                unicode(self.tr("VM '{0}' has been created.")).format(vmname), msecs=3000)
+                unicode(app.tr("VM '{0}' has been created.")).format(vmname), msecs=3000)
         else:
             QMessageBox.warning(None,
-                self.tr("Error creating AppVM!"),
-                unicode(self.tr("ERROR: {0}")).format(thread_monitor.error_msg))
+                app.tr("Error creating AppVM!"),
+                unicode(app.tr("ERROR: {0}")).format(thread_monitor.error_msg))
 
         self.done(0)
 

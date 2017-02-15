@@ -145,7 +145,7 @@ class RestoreVMsWindow(Ui_Restore, QWizard):
                     continue
                 self.select_vms_widget.available_list.addItem(vmname)
         except QubesException as ex:
-            QMessageBox.warning (None, self.tr("Restore error!"), str(ex))
+            QMessageBox.warning (None, app.tr("Restore error!"), str(ex))
 
     def __init_restore_options__(self):
         if not self.restore_options:
@@ -193,24 +193,24 @@ class RestoreVMsWindow(Ui_Restore, QWizard):
             print "Exception:", ex
             err_msg.append(unicode(ex))
             err_msg.append(
-                self.tr("Partially restored files left in "
+                app.tr("Partially restored files left in "
                    "/var/tmp/restore_*, investigate them and/or clean them up"))
 
         self.qvm_collection.unlock_db()
         if self.canceled:
             self.emit(SIGNAL("restore_progress(QString)"),
                       '<b><font color="red">{0}</font></b>'
-                      .format(self.tr("Restore aborted!")))
+                      .format(app.tr("Restore aborted!")))
         elif len(err_msg) > 0 or self.error_detected.is_set():
             if len(err_msg) > 0:
                 thread_monitor.set_error_msg('\n'.join(err_msg))
             self.emit(SIGNAL("restore_progress(QString)"),
                       '<b><font color="red">{0}</font></b>'
-                      .format(self.tr("Finished with errors!")))
+                      .format(app.tr("Finished with errors!")))
         else:
             self.emit(SIGNAL("restore_progress(QString)"),
                       '<font color="green">{0}</font>'
-                      .format(self.tr("Finished successfully!")))
+                      .format(app.tr("Finished successfully!")))
 
         thread_monitor.set_finished()
 
@@ -264,21 +264,21 @@ class RestoreVMsWindow(Ui_Restore, QWizard):
             if not self.thread_monitor.success:
                 if self.canceled:
                     if self.tmpdir_to_remove and \
-                        QMessageBox.warning(None, self.tr("Restore aborted"),
-                            self.tr("Do you want to remove temporary files "
+                        QMessageBox.warning(None, app.tr("Restore aborted"),
+                            app.tr("Do you want to remove temporary files "
                                     "from %s?") % self.tmpdir_to_remove,
                             QMessageBox.Yes, QMessageBox.No) == \
                             QMessageBox.Yes:
                         shutil.rmtree(self.tmpdir_to_remove)
                 else:
                     QMessageBox.warning(None,
-                        self.tr("Backup error!"), unicode(self.tr("ERROR: {0}"))
+                        app.tr("Backup error!"), unicode(self.tr("ERROR: {0}"))
                                       .format(self.thread_monitor.error_msg))
 
             if self.showFileDialog.isChecked():
                 self.emit(SIGNAL("restore_progress(QString)"),
                           '<b><font color="black">{0}</font></b>'.format(
-                              self.tr(
+                              app.tr(
                                   "Please unmount your backup volume and cancel"
                                   " the file selection dialog.")))
                 if self.target_appvm:
@@ -288,7 +288,7 @@ class RestoreVMsWindow(Ui_Restore, QWizard):
                     file_dialog = QFileDialog()
                     file_dialog.setReadOnly(True)
                     file_dialog.getExistingDirectory(
-                        self, self.tr("Detach backup device"),
+                        self, app.tr("Detach backup device"),
                         os.path.dirname(unicode(self.dir_line_edit.text())))
             self.progress_bar.setValue(100)
             self.button(self.FinishButton).setEnabled(True)
@@ -310,7 +310,7 @@ class RestoreVMsWindow(Ui_Restore, QWizard):
             if backup.backup_cancel():
                 self.emit(SIGNAL("restore_progress(QString)"),
                           '<font color="red">{0}</font>'
-                          .format(self.tr("Aborting the operation...")))
+                          .format(app.tr("Aborting the operation...")))
                 self.button(self.CancelButton).setDisabled(True)
         else:
             self.done(0)

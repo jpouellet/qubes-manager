@@ -54,7 +54,7 @@ class VMSettingsWindow(Ui_SettingsDialog, QDialog):
             self.source_vm = self.vm
 
         self.setupUi(self)
-        self.setWindowTitle(unicode(self.tr("Settings: {vm}")).format(vm=self.vm.name))
+        self.setWindowTitle(unicode(app.tr("Settings: {vm}")).format(vm=self.vm.name))
         if init_page in self.tabs_indices:
             idx = self.tabs_indices[init_page]
             assert (idx in range(self.tabWidget.count()))
@@ -119,7 +119,7 @@ class VMSettingsWindow(Ui_SettingsDialog, QDialog):
         thread.start()
 
         progress = QProgressDialog(
-            unicode(self.tr("Applying settings to <b>{0}</b>...")).format(self.vm.name), "", 0, 0)
+            unicode(app.tr("Applying settings to <b>{0}</b>...")).format(self.vm.name), "", 0, 0)
         progress.setCancelButton(None)
         progress.setModal(True)
         progress.show()
@@ -132,8 +132,8 @@ class VMSettingsWindow(Ui_SettingsDialog, QDialog):
 
         if not thread_monitor.success:
             QMessageBox.warning(None,
-                unicode(self.tr("Error while changing settings for {0}!")).format(self.vm.name),
-                    unicode(self.tr("ERROR: {0}")).format(thread_monitor.error_msg))
+                unicode(app.tr("Error while changing settings for {0}!")).format(self.vm.name),
+                    unicode(app.tr("ERROR: {0}")).format(thread_monitor.error_msg))
 
         self.done(0)
 
@@ -157,7 +157,7 @@ class VMSettingsWindow(Ui_SettingsDialog, QDialog):
             if len(ret_tmp) > 0:
                 ret += ["Sevices tab:"] + ret_tmp
         except Exception as ex:
-            ret.append(self.tr('Error while saving changes: ') + str(ex))
+            ret.append(app.tr('Error while saving changes: ') + str(ex))
 
         if self.anything_changed == True:
             self.qvm_collection.save()
@@ -172,13 +172,13 @@ class VMSettingsWindow(Ui_SettingsDialog, QDialog):
                         self.tempFullAccess.isChecked(),
                         self.tempFullAccessTime.value())
         except Exception as ex:
-            ret += [self.tr("Firewall tab:"), str(ex)]
+            ret += [app.tr("Firewall tab:"), str(ex)]
 
         try:
             if self.tabWidget.isTabEnabled(self.tabs_indices["applications"]):
                 self.AppListManager.save_appmenu_select_changes()
         except Exception as ex:
-            ret += [self.tr("Applications tab:"), str(ex)]
+            ret += [app.tr("Applications tab:"), str(ex)]
 
         if len(ret) > 0 :
             thread_monitor.set_error_msg('\n'.join(ret))
@@ -190,8 +190,8 @@ class VMSettingsWindow(Ui_SettingsDialog, QDialog):
         if idx == self.tabs_indices["firewall"]:
             if self.vm.netvm is not None and not self.vm.netvm.is_proxyvm():
                 QMessageBox.warning(None,
-                    self.tr("VM configuration problem!"),
-                    unicode(self.tr("The '{vm}' AppVM is not network connected to a "
+                    app.tr("VM configuration problem!"),
+                    unicode(app.tr("The '{vm}' AppVM is not network connected to a "
                     "FirewallVM!<p>"
                     "You may edit the '{vm}' VM firewall rules, but these "
                     "will not take any effect until you connect it to "
@@ -235,10 +235,10 @@ class VMSettingsWindow(Ui_SettingsDialog, QDialog):
                     continue
                 text = vm.name
                 if vm is self.qvm_collection.get_default_template():
-                    text += self.tr(" (default)")
+                    text += app.tr(" (default)")
                 if vm.qid == self.vm.template.qid:
                     self.template_idx = i
-                    text += self.tr(" (current)")
+                    text += app.tr(" (current)")
                 self.template_name.insertItem(i, text)
                 i += 1
             self.template_name.setCurrentIndex(self.template_idx)
@@ -256,7 +256,7 @@ class VMSettingsWindow(Ui_SettingsDialog, QDialog):
             if default_netvm is not None:
                 text = "default (%s)" % default_netvm.name
                 if self.vm.uses_default_netvm:
-                    text += self.tr(" (current)")
+                    text += app.tr(" (current)")
                     self.netvm_idx = 0
                 self.netVM.insertItem(0, text)
 
@@ -264,12 +264,12 @@ class VMSettingsWindow(Ui_SettingsDialog, QDialog):
                 text = vm.name
                 if self.vm.netvm is not None and vm.qid == self.vm.netvm.qid and not self.vm.uses_default_netvm:
                     self.netvm_idx = i+1
-                    text += self.tr(" (current)")
+                    text += app.tr(" (current)")
                 self.netVM.insertItem(i+1, text)
 
             none_text = "none"
             if self.vm.netvm is None:
-                none_text += self.tr(" (current)")
+                none_text += app.tr(" (current)")
                 self.netvm_idx = len(netvm_list)+1
             self.netVM.insertItem(len(netvm_list)+1, none_text)
 
@@ -333,10 +333,10 @@ class VMSettingsWindow(Ui_SettingsDialog, QDialog):
         vmname = str(self.vmname.text())
         if self.vm.name != vmname:
             if self.vm.is_running():
-                msg.append(self.tr("Can't change name of a running VM."))
+                msg.append(app.tr("Can't change name of a running VM."))
             elif self.qvm_collection.get_vm_by_name(vmname) is not None:
                 msg.append(
-                    unicode(self.tr("Can't change VM name - a VM named <b>{0}</b>"
+                    unicode(app.tr("Can't change VM name - a VM named <b>{0}</b>"
                             "already exists in the system!")).format(vmname))
             else:
                 oldname = self.vm.name
@@ -452,15 +452,15 @@ class VMSettingsWindow(Ui_SettingsDialog, QDialog):
     def check_mem_changes(self):
         if self.max_mem_size.value() < self.init_mem.value():
             QMessageBox.warning(None,
-                self.tr("Warning!"),
-                self.tr("Max memory can not be less than initial memory.<br>"
+                app.tr("Warning!"),
+                app.tr("Max memory can not be less than initial memory.<br>"
                         "Setting max memory to equal initial memory."))
             self.max_mem_size.setValue(self.init_mem.value())
         # Linux specific limit: init memory must not be below max_mem_size/10.79 in order to allow scaling up to max_mem_size (or else "add_memory() failed: -17" problem)
         if self.init_mem.value() * 10 < self.max_mem_size.value():
             QMessageBox.warning(None,
-                self.tr("Warning!"),
-                self.tr("Initial memory can not be less than one tenth "
+                app.tr("Warning!"),
+                app.tr("Initial memory can not be less than one tenth "
                         "Max memory.<br>Setting initial memory to the minimum "
                         "allowed value."))
             self.init_mem.setValue(self.max_mem_size.value() / 10)
@@ -579,7 +579,7 @@ class VMSettingsWindow(Ui_SettingsDialog, QDialog):
 
             text = "default (same as VM own NetVM)"
             if self.vm.uses_default_dispvm_netvm:
-                text += self.tr(" (current)")
+                text += app.tr(" (current)")
                 self.dispvm_netvm_idx = 0
             self.dispvm_netvm.insertItem(0, text)
 
@@ -589,12 +589,12 @@ class VMSettingsWindow(Ui_SettingsDialog, QDialog):
                         self.vm.dispvm_netvm.qid and not \
                         self.vm.uses_default_dispvm_netvm:
                     self.dispvm_netvm_idx = i+1
-                    text += self.tr(" (current)")
+                    text += app.tr(" (current)")
                 self.dispvm_netvm.insertItem(i+1, text)
 
             none_text = "none"
             if self.vm.dispvm_netvm is None:
-                none_text += self.tr(" (current)")
+                none_text += app.tr(" (current)")
                 self.dispvm_netvm_idx = len(netvm_list)+1
             self.dispvm_netvm.insertItem(len(netvm_list)+1, none_text)
 
@@ -821,7 +821,7 @@ class VMSettingsWindow(Ui_SettingsDialog, QDialog):
         if srv != "":
             if srv in self.new_srv_dict:
                 QMessageBox.information(None, "",
-                    self.tr("Service already on the list!"))
+                    app.tr("Service already on the list!"))
             else:
                 item = QListWidgetItem(srv)
                 item.setCheckState(QtCore.Qt.Checked)
@@ -835,8 +835,8 @@ class VMSettingsWindow(Ui_SettingsDialog, QDialog):
             return
         if str(item.text()) == 'meminfo-writer':
             QMessageBox.information(None,
-                self.tr("Service can not be removed"),
-                self.tr("Service meminfo-writer can not be removed from the list."))
+                app.tr("Service can not be removed"),
+                app.tr("Service meminfo-writer can not be removed from the list."))
             return
 
         row = self.services_list.currentRow()
@@ -977,8 +977,8 @@ class VMSettingsWindow(Ui_SettingsDialog, QDialog):
 
             if port is not None:
                 if port2 is not None and port2 <= port:
-                    QMessageBox.warning(None, self.tr("Invalid service ports range"),
-                        unicode(self.tr("Port {0} is lower than port {1}.")).format(
+                    QMessageBox.warning(None, app.tr("Invalid service ports range"),
+                        unicode(app.tr("Port {0} is lower than port {1}.")).format(
                             port2, port))
                 else:
                     item = {"address": address,
@@ -992,8 +992,8 @@ class VMSettingsWindow(Ui_SettingsDialog, QDialog):
                     else:
                         self.fw_model.appendChild(item)
             else:
-                QMessageBox.warning(None, self.tr("Invalid service name"),
-                    unicode(self.tr("Service '{0}' is unknown.")).format(service))
+                QMessageBox.warning(None, app.tr("Invalid service name"),
+                    unicode(app.tr("Service '{0}' is unknown.")).format(service))
 
 
 # Bases on the original code by:
