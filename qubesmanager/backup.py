@@ -384,8 +384,8 @@ class BackupVMsWindow(Ui_Backup, QWizard):
                     self.progress_status.setText(self.tr("Backup aborted."))
                     if self.tmpdir_to_remove:
                         if QMessageBox.warning(None, self.tr("Backup aborted"),
-                                self.tr("Do you want to remove temporary files from "
-                                        "%s?") % self.tmpdir_to_remove,
+                                unicode(self.tr("Do you want to remove temporary files from "
+                                        "%s?")) % self.tmpdir_to_remove,
                                 QMessageBox.Yes, QMessageBox.No) == QMessageBox.Yes:
                             shutil.rmtree(self.tmpdir_to_remove)
                 else:
